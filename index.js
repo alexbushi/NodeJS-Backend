@@ -1,7 +1,16 @@
 const express = require('express');
+const config = require('config');
 const helmet = require('helmet');
 const logger = require('./logger');
 const app = express();
+
+if (app.get('env') === 'development') {
+    // load some other middleware, etc...
+}
+
+// Configuration
+console.log('Application Name: ' + config.get('name'));
+//console.log('Password: ' + config.get('password'))
 
 app.use(helmet());
 
@@ -12,7 +21,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/courses', (req, res) => {
-    res.send([1,2,3,4]);
+    res.send([1, 2, 3, 4]);
 });
 
 app.get('/api/courses/:id', (req, res) => {
