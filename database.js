@@ -13,8 +13,13 @@ const connectToDb = () => {
 };
 
 const courseSchema = mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   author: String,
+  category: {
+    type: String,
+    required: true,
+    enum: ['web', 'mobile', 'network'],
+  },
   tags: [String],
   date: { type: Date, default: Date.now },
   isPublished: Boolean,
@@ -26,14 +31,18 @@ const Course = mongoose.model('Course', courseSchema);
 
 const createCourse = async () => {
   const firstCourse = Course({
-    name: 'React Course',
+    name: 'Angular Course',
     author: 'Alex',
     tags: ['js', 'frontend'],
     isPublished: true,
   });
 
-  const result = await firstCourse.save();
-  debug(result);
+  try {
+    const result = await firstCourse.save();
+    debug(result);
+  } catch (ex) {
+    for (field in ex.errors) debug(ex.errors[field].message);
+  }
 };
 
 //createCourse();
