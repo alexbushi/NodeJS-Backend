@@ -6,6 +6,7 @@ const config = require('config');
 const helmet = require('helmet');
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses');
+const users = require('./routes/users');
 const home = require('./routes/home');
 const app = express();
 
@@ -22,10 +23,12 @@ debug('Application Name: ' + config.get('name'));
 connectToDb();
 
 // Middleware = .use
-app.use('/api/courses', courses);
-app.use('/', home);
 app.use(helmet());
 app.use(logger);
+app.use(express.json());
+app.use('/', home);
+app.use('/api/courses', courses);
+app.use('/api/users', users);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => debug(`Listening on port ${port}...`));

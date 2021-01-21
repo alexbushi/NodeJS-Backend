@@ -7,6 +7,7 @@ const connectToDb = () => {
     .connect(config.get('mongodb_url'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useCreateIndex: true,
     })
     .then(() => debug('Connected to MongoDB...'))
     .catch((error) => debug('Could not connect to MongoDB...', error));
