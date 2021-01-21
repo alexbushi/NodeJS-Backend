@@ -7,8 +7,14 @@ const helmet = require('helmet');
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses');
 const users = require('./routes/users');
+const auth = require('./routes/auth');
 const home = require('./routes/home');
 const app = express();
+
+if (!config.get('jwtPrivateKey')) {
+  console.error('FATAL ERROR: jwtPrivateKey is not defined.');
+  process.exit(1);
+}
 
 // export NODE_ENV=development
 // if did export NODE_ENV=default config.get will pull from respective file
@@ -29,6 +35,7 @@ app.use(express.json());
 app.use('/', home);
 app.use('/api/courses', courses);
 app.use('/api/users', users);
+app.use('/api/auth', auth);
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => debug(`Listening on port ${port}...`));
