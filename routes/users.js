@@ -1,12 +1,8 @@
 const { User, validate } = require('../models/user');
-const mongoose = require('mongoose');
 const express = require('express');
+const router = express.Router();
 const bcrypt = require('bcrypt');
 const auth = require('../middleware/auth');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const debug = require('debug')('app:startup');
-const router = express.Router();
 
 router.get('/me', auth, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
@@ -42,6 +38,11 @@ router.post('/', async (req, res) => {
     name: user.name,
     email: user.email,
   });
+});
+
+router.get('/', async (req, res) => {
+  const users = await User.find().select('-password').sort('name');
+  res.send(users);
 });
 
 module.exports = router;
