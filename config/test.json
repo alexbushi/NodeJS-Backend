@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "1234",
+  "mongodb_url": "mongodb://localhost/app_tests"
+}

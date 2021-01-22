@@ -5,6 +5,15 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 
+const validateLoginCredentials = (userCredentials) => {
+  const schema = Joi.object({
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(5).max(255).required(),
+  });
+
+  return schema.validate(userCredentials);
+};
+
 router.post('/', validate(validateLoginCredentials), async (req, res) => {
   // Check to see if user exists with email
   let user = await User.findOne({ email: req.body.email });
@@ -16,14 +25,5 @@ router.post('/', validate(validateLoginCredentials), async (req, res) => {
   const token = user.generateAuthToken();
   res.send(token);
 });
-
-const validateLoginCredentials = (req) => {
-  const schema = Joi.object({
-    email: Joi.string().min(5).max(255).required().email(),
-    password: Joi.string().min(5).max(255).required(),
-  });
-
-  return schema.validate(req);
-};
 
 module.exports = router;

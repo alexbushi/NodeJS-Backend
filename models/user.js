@@ -26,7 +26,8 @@ const userSchema = mongoose.Schema({
   isAdmin: Boolean,
 });
 
-// add a method to this userSchema object called generateAuthToken
+// add a method to this userSchema object called generateAuthToken because uses properties of this document
+// to do some function, Instance Method because output of this function depends on object
 userSchema.methods.generateAuthToken = function () {
   // First argument is what we want in the token payload so we don't have to query database for it, can be anything
   // Second argument is the secret key
