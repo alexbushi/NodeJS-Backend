@@ -1,5 +1,6 @@
 const { User, validateUser } = require('../models/user');
 const validate = require('../middleware/validate');
+const validateObjectId = require('../middleware/validateObjectId');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
@@ -44,13 +45,10 @@ router.get('/', async (req, res) => {
   res.send(users);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', validateObjectId, async (req, res) => {
   // Input validation
   //const { error } = validate(req.body);
   //if (error) return res.status(400).send(error.details[0].message);
-
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(404).send('The user with the given ID does not exist');
 
   // Update First and return updated user
   const user = await User.findByIdAndUpdate(
@@ -65,10 +63,7 @@ router.put('/:id', async (req, res) => {
   res.send(user);
 });
 
-router.delete('/:id', async (req, res) => {
-  if (!mongoose.Types.ObjectId.isValid(req.params.id))
-    return res.status(404).send('The user with the given ID does not exist');
-
+router.delete('/:id', validateObjectId, async (req, res) => {
   const user = await User.findByIdAndRemove(req.params.id).select('-password');
 
   if (!user)

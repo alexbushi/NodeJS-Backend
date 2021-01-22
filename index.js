@@ -8,4 +8,8 @@ require('./startup/database')();
 require('./startup/config')(app);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => winston.info(`Listening on port ${port}...`));
+const server = app.listen(port, () =>
+  winston.info(`Listening on port ${port}...`)
+);
+
+module.exports = server;
