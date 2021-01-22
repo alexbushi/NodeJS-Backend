@@ -1,20 +1,12 @@
-const { User, validate } = require('../models/user');
+const { User, validateUser } = require('../models/user');
+const validate = require('../middleware/validate');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 const auth = require('../middleware/auth');
 
-// Peform auth middleware function before this
-router.get('/me', auth, async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
-  res.send(user);
-});
-
-router.post('/', async (req, res) => {
-  // Joi input validation
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
+router.post('/', validate(validateUser), async (req, res) => {
   // Check to see if user is already registered
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send('User already registered');
@@ -41,9 +33,48 @@ router.post('/', async (req, res) => {
   });
 });
 
+// Peform auth middleware function before this
+router.get('/me', auth, async (req, res) => {
+  const user = await User.findById(req.user._id).select('-password');
+  res.send(user);
+});
+
 router.get('/', async (req, res) => {
   const users = await User.find().select('-password').sort('name');
   res.send(users);
+});
+
+router.put('/:id', async (req, res) => {
+  // Input validation
+  //const { error } = validate(req.body);
+  //if (error) return res.status(400).send(error.details[0].message);
+
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send('The user with the given ID does not exist');
+
+  // Update First and return updated user
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { name: req.body.name },
+    { new: true }
+  );
+
+  if (!user)
+    return res.status(404).send('The user with the given ID does not exist');
+
+  res.send(user);
+});
+
+router.delete('/:id', async (req, res) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id))
+    return res.status(404).send('The user with the given ID does not exist');
+
+  const user = await User.findByIdAndRemove(req.params.id).select('-password');
+
+  if (!user)
+    return res.status(404).send('The user with the given ID does not exist');
+
+  res.send(user);
 });
 
 module.exports = router;
