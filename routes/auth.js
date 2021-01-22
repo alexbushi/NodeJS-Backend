@@ -2,7 +2,6 @@ const Joi = require('joi');
 const { User } = require('../models/user');
 const express = require('express');
 const bcrypt = require('bcrypt');
-const debug = require('debug')('app:startup');
 const router = express.Router();
 
 router.post('/', async (req, res) => {
