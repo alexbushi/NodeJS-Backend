@@ -2,21 +2,22 @@ const { User } = require('../../models/user');
 const request = require('supertest');
 
 describe('auth middleware', () => {
-  beforeEach(() => {
-    server = require('../../index');
-  });
-  afterEach(async () => {
-    server.close();
-  });
-
+  // Variables that will change for each test
   let token;
 
+  // Function that each test will always execute
   const exec = () => {
     return request(server).get('/api/users/me').set('x-auth-token', token);
   };
 
   beforeEach(() => {
+    server = require('../../index');
+
+    // Define all valid variables
     token = User().generateAuthToken();
+  });
+  afterEach(async () => {
+    await server.close();
   });
 
   it('should return 401 if no token is provided', async () => {

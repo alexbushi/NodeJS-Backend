@@ -8,7 +8,7 @@ describe('/api/users', () => {
     server = require('../../index');
   });
   afterEach(async () => {
-    server.close();
+    await server.close();
     await User.deleteMany({});
   });
 
@@ -36,26 +36,32 @@ describe('/api/users', () => {
   });
 
   describe('GET /me', () => {
+    let token;
+
+    const exec = () => {
+      return request(server).get('/api/users/me').set('x-auth-token', token);
+    };
+
     it('should return 401 if client is not logged in', async () => {
-      const res = await await request(server).get('/api/users/me');
+      token = '';
+
+      const res = await exec();
 
       expect(res.status).toBe(401);
     });
 
     it('should return 400 if invalid token is given', async () => {
-      const res = await request(server)
-        .get('/api/users/me')
-        .set('x-auth-token', '12');
+      token = 'aaaa';
+
+      const res = await exec();
 
       expect(res.status).toBe(400);
     });
 
     it('should return 200 if a valid token is given', async () => {
-      const token = new User().generateAuthToken();
+      token = new User().generateAuthToken();
 
-      const res = await request(server)
-        .get('/api/users/me')
-        .set('x-auth-token', token);
+      const res = await exec();
 
       expect(res.status).toBe(200);
     });
