@@ -71,7 +71,7 @@ describe('/api/users', () => {
     it('should save the user if it is valid', async () => {
       const res = await request(server)
         .post('/api/users')
-        .set({ name: 'Gloria', email: 'gg@g.com', password: '12345' });
+        .send({ name: 'Gloria', email: 'gg@g.com', password: '12345' });
 
       const user = await User.find({ name: 'Gloria' });
 
@@ -81,7 +81,7 @@ describe('/api/users', () => {
     // it('should return the user if it is valid', async () => {
     //   const res = await request(server)
     //     .post('/api/users')
-    //     .set({ name: 'Shannon', email: 'sss@g.com', password: '12345' });
+    //     .send({ name: 'Shannon', email: 'sss@g.com', password: '12345' });
 
     //   expect(res.body).toHaveProperty('_id');
     //   expect(res.body).toHaveProperty('name', 'Shannon');
