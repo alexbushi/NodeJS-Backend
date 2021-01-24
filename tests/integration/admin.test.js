@@ -5,10 +5,18 @@ const config = require('config');
 const mongoose = require('mongoose');
 
 describe('admin middleware', () => {
-  let decodedUser;
-  let token;
+  let isAdmin;
 
   const exec = () => {
+    const user = {
+      _id: mongoose.Types.ObjectId().toHexString(),
+      isAdmin,
+    };
+
+    const token = User(user).generateAuthToken();
+
+    const decodedUser = jwt.verify(token, config.get('jwtPrivateKey'));
+
     return request(server)
       .get('/')
       .set('x-auth-token', token)
@@ -23,14 +31,7 @@ describe('admin middleware', () => {
   });
 
   it('should return 403 when user does not have admin authorization', async () => {
-    const user = {
-      _id: mongoose.Types.ObjectId().toHexString(),
-      isAdmin: false,
-    };
-
-    token = User(user).generateAuthToken();
-
-    decodedUser = jwt.verify(token, config.get('jwtPrivateKey'));
+    isAdmin = false;
 
     const res = await exec();
 
@@ -38,14 +39,7 @@ describe('admin middleware', () => {
   });
 
   it('should return 200 when user has admin authorization', async () => {
-    const user = {
-      _id: mongoose.Types.ObjectId().toHexString(),
-      isAdmin: true,
-    };
-
-    token = User(user).generateAuthToken();
-
-    decodedUser = jwt.verify(token, config.get('jwtPrivateKey'));
+    isAdmin = true;
 
     const res = await exec();
 
