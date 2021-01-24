@@ -4,7 +4,6 @@ const validateObjectId = require('../middleware/validateObjectId');
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
 const auth = require('../middleware/auth');
 
 router.post('/', validate(validateUser), async (req, res) => {

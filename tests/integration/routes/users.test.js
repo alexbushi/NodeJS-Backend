@@ -1,21 +1,21 @@
-const { User } = require('../../models/user');
+const { User } = require('../../../models/user');
 const request = require('supertest');
 let server;
 
 describe('/api/users', () => {
   // Need to open and close server before and after every test
   beforeEach(() => {
-    server = require('../../index');
+    server = require('../../../index');
   });
   afterEach(async () => {
-    await server.close();
     await User.deleteMany({});
+    await server.close();
   });
 
   describe('GET /', () => {
     it('should return all users', async () => {
       await User.collection.insertMany([
-        { name: 'user1', email: '222s@g.com', password: '11111' },
+        { name: 'user1', email: '222@g.com', password: '11111' },
         { name: 'user2', email: '2@g.com', password: '22222' },
       ]);
 

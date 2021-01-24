@@ -1,4 +1,4 @@
-const { User } = require('../../models/user');
+const { User } = require('../../../models/user');
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const config = require('config');
@@ -24,7 +24,7 @@ describe('admin middleware', () => {
   };
 
   beforeEach(() => {
-    server = require('../../index');
+    server = require('../../../index');
   });
   afterEach(async () => {
     await server.close();

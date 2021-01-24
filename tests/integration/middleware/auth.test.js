@@ -1,4 +1,4 @@
-const { User } = require('../../models/user');
+const { User } = require('../../../models/user');
 const request = require('supertest');
 
 describe('auth middleware', () => {
@@ -11,7 +11,7 @@ describe('auth middleware', () => {
   };
 
   beforeEach(() => {
-    server = require('../../index');
+    server = require('../../../index');
 
     // Define all valid variables
     token = User().generateAuthToken();
