@@ -30,7 +30,7 @@ describe('auth route', () => {
   });
 
   it('should return 400 if invalid email is given', async () => {
-    email = '';
+    email = 'b@g.com';
     password = '11111';
 
     const res = await exec();
@@ -40,7 +40,7 @@ describe('auth route', () => {
 
   it('should return 400 if invalid passwod is given', async () => {
     email = '222@g.com';
-    password = '';
+    password = '1234567';
 
     const res = await exec();
 

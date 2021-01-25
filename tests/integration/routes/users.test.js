@@ -68,6 +68,19 @@ describe('/api/users', () => {
   });
 
   describe('POST /', () => {
+    it('should return 400 if the user with the given email is already registered', async () => {
+      await User.collection.insertOne({
+        name: 'user2',
+        email: '2@g.com',
+        password: '22222',
+      });
+      const res = await request(server)
+        .post('/api/users')
+        .send({ name: 'Gloria', email: '2@g.com', password: '12345' });
+
+      expect(res.status).toBe(400);
+    });
+
     it('should save the user if it is valid', async () => {
       const res = await request(server)
         .post('/api/users')
@@ -78,13 +91,63 @@ describe('/api/users', () => {
       expect(user).not.toBeNull();
     });
 
-    // it('should return the user if it is valid', async () => {
-    //   const res = await request(server)
-    //     .post('/api/users')
-    //     .send({ name: 'Shannon', email: 'sss@g.com', password: '12345' });
+    it('should return the user if it is valid', async () => {
+      const res = await request(server)
+        .post('/api/users')
+        .send({ name: 'Shannon', email: 'sss@g.com', password: '12345' });
 
-    //   expect(res.body).toHaveProperty('_id');
-    //   expect(res.body).toHaveProperty('name', 'Shannon');
-    // });
+      expect(res.body).toHaveProperty('name', 'Shannon');
+    });
   });
+
+  // describe('DELETE /:id', () => {
+  //   let user;
+  //   let id;
+
+  //   const exec = () => {
+  //     return request(server).delete('/api/users/' + id);
+  //   };
+
+  //   beforeEach(async () => {
+  //     user = User({ name: 'user1', email: '1@g.com', password: '123456' });
+  //     await user.save();
+
+  //     id = user._id;
+  //   });
+
+  //   it('should return the removed genre', async () => {
+  //     const res = await exec();
+
+  //     expect(res.body).toHaveProperty('_id', user._id.toHexString());
+  //     expect(res.body).toHaveProperty('name', user.name);
+  //   });
+  // });
+
+  // describe('PUT /:id', () => {
+  //   let newName;
+  //   let user;
+  //   let id;
+
+  //   const exec = async () => {
+  //     return await request(server)
+  //       .put('/api/users/' + id)
+  //       .send({ name: newName });
+  //   };
+
+  //   beforeEach(async () => {
+  //     user = new User({ name: 'user1', email: '1@g.com', password: '123456' });
+  //     await user.save();
+
+  //     token = new User().generateAuthToken();
+  //     id = user._id;
+  //     newName = 'updatedName';
+  //   });
+
+  //   it('should return the updated user if it is valid', async () => {
+  //     const res = await exec();
+
+  //     expect(res.body).toHaveProperty('_id');
+  //     expect(res.body).toHaveProperty('name', newName);
+  //   });
+  // });
 });

@@ -6,14 +6,11 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 router.post('/', validate(validateUserLogin), async (req, res) => {
-  // Check to see if user exists with email
   let user = await User.findOne({ email: req.body.email });
   if (!user) return res.status(400).send('Invalid email or password');
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) {
-    return res.status(400).send('Invalid email or password');
-  }
+  if (!validPassword) return res.status(400).send('Invalid email or password');
 
   const token = user.generateAuthToken();
   res.send(token);
